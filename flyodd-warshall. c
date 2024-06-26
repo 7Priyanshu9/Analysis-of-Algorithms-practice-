@@ -1,0 +1,74 @@
+#include <stdio.h>
+#define INF 99999  // Represents infinity for distances
+
+void floydWarshall(int graph[][100], int V) {
+    int dist[V][V], i, j, k;
+
+    // Initialize the solution matrix same as input graph matrix
+    for (i = 0; i < V; i++) {
+        for (j = 0; j < V; j++) {
+            dist[i][j] = graph[i][j];
+        }
+    }
+
+    // Floyd-Warshall algorithm using dynamic programming
+    for (k = 0; k < V; k++) {
+        for (i = 0; i < V; i++) {
+            for (j = 0; j < V; j++) {
+                if (dist[i][j] > dist[i][k] + dist[k][j]) {
+                    dist[i][j] = dist[i][k] + dist[k][j];
+                }
+            }
+        }
+    }
+
+    // Print the shortest distance matrix
+    printf("Shortest distance matrix:\n");
+    for (i = 0; i < V; i++) {
+        for (j = 0; j < V; j++) {
+            if (dist[i][j] == INF) {
+                printf("INF ");  // Print "INF" for unreachable nodes
+            } else {
+                printf("%d ", dist[i][j]);
+            }
+        }
+        printf("\n");
+    }
+}
+
+int main() {
+    int V, i, j;
+
+    printf("Enter the number of vertices: ");
+    if (scanf("%d", &V) != 1 || V <= 0 || V > 100) {
+        fprintf(stderr, "Invalid number of vertices (must be between 1 and 100)\n");
+        return 1;
+    }
+
+    int graph[V][V];
+
+    printf("Enter the adjacency matrix:\n");
+    for (i = 0; i < V; i++) {
+        for (j = 0; j < V; j++) {
+            if (scanf("%d", &graph[i][j]) != 1) {
+                fprintf(stderr, "Invalid input format\n");
+                return 1;
+            }
+            // Handle negative edge weights (optional)
+            // if (graph[i][j] < 0) {
+            //     fprintf(stderr, "Negative edge weights are not allowed\n");
+            //     return 1;
+            // }
+        }
+    }
+
+    floydWarshall(graph, V);
+
+    return 0;
+}
+
+//vertices 4
+//0 5 3 INF
+//INF 0 2 INF
+//INF INF 0 INF
+//INF INF INF 0
